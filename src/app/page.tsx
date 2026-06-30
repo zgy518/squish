@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { ImageFile, OutputFormat } from "@/types";
 import { generateId } from "@/lib/format";
 import { compressImage } from "@/lib/compress";
@@ -11,6 +11,8 @@ import { ImagePreview } from "@/components/ImagePreview";
 import { QualitySlider } from "@/components/QualitySlider";
 import { TargetSizeInput } from "@/components/TargetSizeInput";
 import { DownloadButton } from "@/components/DownloadButton";
+import { Paywall } from "@/components/Paywall";
+import { incrementUsage, getRemainingFree, isFreeLimitReached, hasValidLicense, getUsage } from "@/lib/storage";
 
 type CompressMode = "quality" | "target";
 
@@ -20,8 +22,22 @@ export default function Home() {
   const [quality, setQuality] = useState(0.7);
   const [format, setFormat] = useState<OutputFormat | "original">("original");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [remaining, setRemaining] = useState(15);
+  const [hasLicense, setHasLicense] = useState(false);
 
   const isCompressing = images.some((img) => img.status === "compressing");
+
+  // Refresh license & usage state (called after license activation)
+  const refreshUsage = () => {
+    setRemaining(getRemainingFree());
+    setHasLicense(hasValidLicense());
+  };
+
+  // Initialize usage state on mount
+  useEffect(() => {
+    refreshUsage();
+  }, []);
 
   const getOutputFormat = (file: File): OutputFormat | undefined => {
     if (format === "original") return undefined;
@@ -33,8 +49,25 @@ export default function Home() {
     return { blob, width, height };
   };
 
+  const trackCompression = (): boolean => {
+    if (hasValidLicense()) return true;
+    if (isFreeLimitReached()) {
+      setShowPaywall(true);
+      return false;
+    }
+    incrementUsage();
+    setRemaining(getRemainingFree());
+    return true;
+  };
+
   const handleFilesSelected = useCallback(
     async (files: File[]) => {
+      // Check limit for each file to be compressed
+      if (!hasValidLicense() && getRemainingFree() < files.length) {
+        setShowPaywall(true);
+        return;
+      }
+
       const newImages: ImageFile[] = files.map((file) => ({
         id: generateId(),
         file,
@@ -46,6 +79,14 @@ export default function Home() {
       setIsProcessing(true);
 
       for (const img of newImages) {
+        // Track usage (stops early if limit reached)
+        if (!trackCompression()) {
+          setImages((prev) =>
+            prev.map((p) => (p.id === img.id ? { ...p, status: "error", error: "Free limit reached" } : p))
+          );
+          continue;
+        }
+
         setImages((prev) =>
           prev.map((p) => (p.id === img.id ? { ...p, status: "compressing" } : p))
         );
@@ -293,6 +334,30 @@ export default function Home() {
             </div>
           )}
 
+          {/* Usage counter + license badge */}
+          <div className="mb-4 flex items-center justify-between text-sm">
+            <span className="text-zinc-500">
+              {hasLicense ? (
+                <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Pro — Unlimited
+                </span>
+              ) : (
+                <span>
+                  <strong>{remaining}</strong> free left today
+                </span>
+              )}
+            </span>
+            {!hasLicense && remaining <= 5 && (
+              <button
+                onClick={() => setShowPaywall(true)}
+                className="text-indigo-600 hover:text-indigo-700 font-medium"
+              >
+                Upgrade →
+              </button>
+            )}
+          </div>
+
           {/* Upload zone */}
           <div className="mb-6">
             <UploadZone onFilesSelected={handleFilesSelected} disabled={isCompressing} />
@@ -422,6 +487,16 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* Paywall modal */}
+      <Paywall
+        isOpen={showPaywall}
+        onClose={() => {
+          setShowPaywall(false);
+          refreshUsage();
+        }}
+        remaining={remaining}
+      />
 
       <footer className="border-t border-zinc-200 bg-white py-6">
         <div className="mx-auto max-w-6xl px-4 text-center text-xs text-zinc-400 sm:px-6">
