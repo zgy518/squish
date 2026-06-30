@@ -71,15 +71,21 @@ export function Paywall({ isOpen, onClose, remaining }: PaywallProps) {
             </li>
           </ul>
 
-          <a
-            href="https://lemonsqueezy.com" // Placeholder — replace with real product URL
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 block w-full rounded-xl bg-indigo-500 px-4 py-3 text-center text-sm font-semibold text-white
-              hover:bg-indigo-600 active:scale-[0.98] transition-all duration-200"
-          >
-            Get Lifetime Access — $9.99
-          </a>
+          {/* Purchase via email */}
+          <div className="mt-5 rounded-lg bg-white border border-zinc-200 p-4 text-left">
+            <p className="text-sm font-medium text-zinc-700 mb-2">
+              To purchase, send an email to:
+            </p>
+            <a
+              href="mailto:18800492787@163.com?subject=Squish%20License%20Purchase"
+              className="block text-sm font-mono text-indigo-600 hover:text-indigo-700 break-all"
+            >
+              18800492787@163.com
+            </a>
+            <p className="mt-2 text-xs text-zinc-500">
+              You{"'"}ll receive a license key within 24 hours after payment via PayPal.
+            </p>
+          </div>
         </div>
 
         {/* Already have a key */}
