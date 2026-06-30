@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Squish — Smart Image Compressor
 
-## Getting Started
+The modern image compressor for the web. Compress images to an **exact target file size**, not just a quality percentage.
 
-First, run the development server:
+**Status:** 🚧 MVP in development
+
+## Why Squish?
+
+- 🎯 **Compress to target size** — Need exactly 100KB? Squish delivers.
+- 🔒 **100% Private** — All processing happens in your browser. Images never uploaded.
+- 🆓 **Free to use** — 15 compressions/day, up to 10MB per file.
+- ⚡ **Batch processing** — Compress multiple images in parallel.
+- 🌐 **Modern formats** — JPG, PNG, WebP, AVIF support.
+
+## Tech Stack
+
+- Next.js 14 + TypeScript + Tailwind CSS
+- Pure browser-side Canvas API compression
+- Web Workers for parallel batch processing
+- Vercel deployment
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Documentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Requirements](docs/requirements.md)
+- [Tech Spec](docs/tech-spec.md)
+- [Design Spec](docs/design-spec.md)
+- [Execution Plan](docs/execution-plan.md)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Roadmap
 
-## Learn More
+- [x] Project skeleton + docs
+- [ ] Core compression (upload + compress + preview + download)
+- [ ] Target-size compression + batch processing
+- [ ] Freemium + LemonSqueezy payment
+- [ ] Responsive polish + SEO
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built by [@zgy518](https://github.com/zgy518)
