@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Squish",
@@ -9,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-2xl px-4 py-24">
-        <a
+        <Link
           href="/"
           className="mb-8 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
         >
@@ -17,7 +18,7 @@ export default function PrivacyPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
           Back to Squish
-        </a>
+        </Link>
 
         <h1 className="text-3xl font-bold text-zinc-900">Privacy Policy</h1>
         <p className="mt-2 text-sm text-zinc-500">Last updated: July 1, 2026</p>

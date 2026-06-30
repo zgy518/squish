@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://squish.vercel.app/sitemap.xml
+Sitemap: https://zgy518.github.io/squish/sitemap.xml
