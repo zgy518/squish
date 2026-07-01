@@ -16,19 +16,23 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./squish
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: squish/package-lock.json
       - run: npm ci
       - run: npm run build
         env:
           DEPLOY_TARGET: github-pages
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: squish/out
 
   deploy:
     needs: build
